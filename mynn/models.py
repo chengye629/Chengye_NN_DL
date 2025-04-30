@@ -281,7 +281,7 @@ class Model_CNN0(Layer):
         pass
 
 class Model_CNN(Layer):
-    def __init__(self, dropout_rate=0.2):
+    def __init__(self, dropout_rate=0.5):
         super().__init__()
         # self.layers = [
         #     conv2D(in_channels=1, out_channels=8, kernel_size=3, stride=1, padding=1),
@@ -302,24 +302,44 @@ class Model_CNN(Layer):
         #     Dropout(p=dropout_rate),
         #     Linear(in_dim=128, out_dim=10)
         # ]
+        # self.layers = [
+        #     conv2D(1, 8, 3, 1, 1),
+        #     ReLU(),
+        #     DummyPool(),
+        #     # MaxPool2D(2, 2),   # 28 → 14
+        #     Flatten(), 
+        #     Linear(6272, 1024),
+        #     ReLU(),
+        #     Linear(1024, 128),
+        #     ReLU(),   
+        #     # Dropout(p=dropout_rate),
+        #     Linear(128, 10)
+        # ]
         self.layers = [
-            conv2D(1, 8, 3, 1, 1),
+            # conv block #1: 1→32, 28×28→28×28
+            conv2D(in_channels=1, out_channels=32, kernel_size=3, stride=1, padding=1),  # ← CHANGED: out_channels ↑
             ReLU(),
-            DummyPool(),
-            # MaxPool2D(2, 2),   # 28 → 14
-            Flatten(), 
-            Linear(6272, 1024),
+            MaxPool2D(kernel_size=2, stride=2),  # 28→14
+
+            # conv block #2: 32→64, 14×14→14×14
+            conv2D(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=1),
             ReLU(),
-            Linear(1024, 128),
-            ReLU(),   
-            # Dropout(p=dropout_rate),
-            Linear(128, 10)
+            MaxPool2D(kernel_size=2, stride=2),  # 14→7
+
+            # Flatten + FC
+            Flatten(),                            # 64×7×7 = 3136
+            Linear(in_dim=64 * 7 * 7, out_dim=128),
+            ReLU(),
+            Dropout(p=dropout_rate),              # Dropout
+            Linear(in_dim=128, out_dim=10)
         ]
 
     def __call__(self, X):
         return self.forward(X)
 
     def forward(self, X):
+        if X.ndim == 2:
+            X = X.reshape(-1, 1, 28, 28)  
         out = X
         for layer in self.layers:
             out = layer(out)

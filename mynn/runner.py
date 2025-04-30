@@ -84,7 +84,7 @@ class RunnerM():
                     print(f"[Dev] loss: {dev_loss}, score: {dev_score}")
 
             if dev_score > best_score:
-                save_path = os.path.join(save_dir, 'best_model10.pickle')
+                save_path = os.path.join(save_dir, 'best_model15.pickle')
                 self.save_model(save_path)
                 print(f"best accuracy performance has been updated: {best_score:.5f} --> {dev_score:.5f}")
                 best_score = dev_score

@@ -50,7 +50,9 @@ scheduler = nn.lr_scheduler.MultiStepLR(optimizer=optimizer, milestones=[800, 24
 loss_fn = nn.op.MultiCrossEntropyLoss(model=CNN_model, max_classes=train_labs.max()+1)
 val_loss_fn = nn.op.MultiCrossEntropyLoss(max_classes=train_labs.max()+1)
 
-runner = nn.runner.RunnerM(CNN_model, optimizer, nn.metric.accuracy, loss_fn, val_loss_fn, scheduler=scheduler)
+runner = nn.runner.RunnerM(CNN_model, optimizer, nn.metric.accuracy,
+                          loss_fn, val_loss_fn,
+                          batch_size=64, scheduler=scheduler)
 
 if isinstance(CNN_model, nn.models.Model_CNN):
     if train_imgs.ndim == 2:
@@ -58,7 +60,7 @@ if isinstance(CNN_model, nn.models.Model_CNN):
     if valid_imgs.ndim == 2:
         valid_imgs = valid_imgs.reshape(-1, 1, 28, 28)
 
-runner.train([train_imgs, train_labs], [valid_imgs, valid_labs], num_epochs=30, log_iters=100, save_dir=r'D:/NN_DL/PJ1/codes/best_models')
+runner.train([train_imgs, train_labs], [valid_imgs, valid_labs], num_epochs=20, log_iters=100, save_dir=r'D:/NN_DL/PJ1/codes/best_models')
 
 _, axes = plt.subplots(1, 2)
 axes.reshape(-1)

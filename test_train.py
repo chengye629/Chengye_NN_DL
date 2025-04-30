@@ -50,9 +50,9 @@ scheduler = nn.lr_scheduler.MultiStepLR(optimizer=optimizer3, milestones=[800, 2
 loss_fn = nn.op.MultiCrossEntropyLoss(model=linear_model_neo, max_classes=train_labs.max()+1)
 val_loss_fn = nn.op.MultiCrossEntropyLoss(max_classes=train_labs.max()+1)
 
-# runner = nn.runner.RunnerM(linear_model, optimizer2, nn.metric.accuracy, loss_fn, val_loss_fn, scheduler=scheduler)
+runner = nn.runner.RunnerM(linear_model_neo, optimizer3, nn.metric.accuracy, loss_fn, val_loss_fn, scheduler=scheduler)
 # runner = nn.runner.RunnerEarlystop(linear_model, optimizer2, nn.metric.accuracy, loss_fn, val_loss_fn, scheduler=scheduler)
-runner = nn.runner.RunnerM_Augmented(linear_model_neo, optimizer3, nn.metric.accuracy, loss_fn, val_loss_fn, scheduler=scheduler, use_augmentation=True)
+# runner = nn.runner.RunnerM_Augmented(linear_model_neo, optimizer3, nn.metric.accuracy, loss_fn, val_loss_fn, scheduler=scheduler, use_augmentation=True)
 
 
 runner.train([train_imgs, train_labs], [valid_imgs, valid_labs], num_epochs=30, log_iters=100, save_dir=r'D:/NN_DL/PJ1/codes/best_models')
